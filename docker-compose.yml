@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+
+  rabbit:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbit"
+      RABBITMQ_DEFAULT_PASS: "rabbit"
+    restart: always
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - app-network
+
+  php:
+    build:
+      context: ./docker/php
+      args:
+        - USER_USERNAME
+        - USER_UID
+        - USER_GID
+    volumes:
+      - ./:/usr/share/nginx/html:rw
+    links:
+      - rabbit
+    depends_on:
+      - rabbit
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  rabbitmq-data:
+    driver: local
