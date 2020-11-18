@@ -22,6 +22,8 @@ RUN apt-get clean && apt-get update && \
     zlib1g-dev \
     libicu-dev \
     libzip-dev \
+    librabbitmq-dev \
+    libssh-dev \
     zip \
     g++ \
     libssl-dev \
@@ -56,6 +58,8 @@ RUN docker-php-ext-install -j$(nproc) \
     simplexml \
     zip
 
+RUN pecl install amqp \
+ && docker-php-ext-enable amqp
 
 # Config file and bin
 COPY conf/php.ini /usr/local/etc/php/php.ini
